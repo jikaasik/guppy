@@ -1,4 +1,4 @@
-class Chess:
+class Board:
     def __init__(self):
         self.white_pawns = 0
         self.black_pawns = 0
@@ -65,3 +65,12 @@ class Chess:
             print()  # Newline after each row
         print()  # Extra newline for better separation
     
+
+def main():
+    chess = Board()
+    chess.setup_board()
+    chess.display_board()
+
+
+if __name__ == "__main__":
+    main()
