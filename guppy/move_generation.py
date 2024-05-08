@@ -21,13 +21,13 @@ queen
 
 """
 
-def build_lookup():
-    move_lookup = {}
+# def build_lookup():
+#     move_lookup = {}
 
-    for i in range(64):
-        row = i // 8
-        column = i % 8
-        for p in ["bishop"]:
-            moves = []
-            for r in range(1, row+1)
-            # maybe the minimum of row and column should determine range?
+#     for i in range(64):
+#         row = i // 8
+#         column = i % 8
+#         for p in ["bishop"]:
+#             moves = []
+#             for r in range(1, row+1)
+#             # maybe the minimum of row and column should determine range?
