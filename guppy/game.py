@@ -1,3 +1,4 @@
+# from move_generation import Move
 from ui import display_board, identify_piece
 
 def get_coordinate_dictionary():
@@ -49,6 +50,22 @@ class ChessGame:
         self.white_king = (1 << 4)
 
 
+    def get_empty_squares(self): # NEEDS WORK...?
+        occupied_squares = (
+            self.white_pawns | self.black_pawns |
+            self.white_rooks | self.black_rooks |
+            self.white_knights | self.black_knights |
+            self.white_bishops | self.black_bishops |
+            self.white_queens | self.black_queens |
+            self.white_king | self.black_king
+        )
+        empty_squares = ~occupied_squares
+        return empty_squares
+    
+    def get_legal_moves(self, piece, origin):
+        pass
+
+
     def move(self, move):
 
         # Change this to algebraic notation when I figure out move option generation
@@ -69,12 +86,15 @@ class ChessGame:
 
 def main():
     chess = ChessGame()
-    for m in [["e2", "e4"], ["e7", "e5"], ["g1", "f3"]]:
+
+    print(bin(chess.get_empty_squares())[2:].zfill(64))
+    for m in [["e2", "e4"], ["e7", "e5"], ["g1", "f3"], ["b8", "c6"], ["f1", "b5"]]:
         chess.move(m)
 
 
     display_board(chess)
 
+    print(bin(chess.get_empty_squares())[2:].zfill(64))
 
 if __name__ == "__main__":
     main()
