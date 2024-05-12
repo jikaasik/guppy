@@ -4,10 +4,11 @@ from ui import display_board, identify_piece
 def get_coordinate_dictionary():
     coordinate_dict = {}
     for i in range(64):
-        row = (i + 8) // 8
-        column = i % 8
-        columns = "abcdefgh"
-        coordinate_dict[i] = f"{columns[column]}{row}"
+        rank = i // 8
+        file = i % 8
+        ranks = "12345678"
+        files = "abcdefgh"
+        coordinate_dict[i] = f"{files[file]}{ranks[rank]}"
     return coordinate_dict
 
 
