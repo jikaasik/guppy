@@ -90,7 +90,7 @@ class Bitboard:
         """Prints the current game state."""
 
         for r in range(7, -1 , -1):
-            print(8 - r, end=' ')
+            print(r + 1, end=' ')
             for f in range(8):
                 square = 8 * r + f
                 piece = None

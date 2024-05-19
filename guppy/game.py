@@ -3,7 +3,7 @@ from moves import MoveGenerator
 
 board = Bitboard()
 moves = MoveGenerator()
-
+board.print_board()
 
 # for m in [["P", ["e2", "e4"]], ["p", ["e7", "e5"]], ["N", ["g1", "f3"]], ["n", ["b8", "c6"]]]:
 #     piece = m[0]
@@ -36,9 +36,4 @@ moves = MoveGenerator()
 #     # board.make_move(piece, knight_moves[0])
 
 #     white_turn = not white_turn
-
-occupied = board.get_occupied_squares()
-board.print_board(occupied)
-
-empty = board.get_empty_squares()
-board.print_board(empty)
+import pdb; pdb.set_trace()
