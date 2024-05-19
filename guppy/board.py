@@ -53,6 +53,39 @@ class Bitboard:
             'k': 0x1000000000000000
         }
 
+    def make_move(self, piece, move):
+
+        origin, destination = move
+
+        if isinstance(origin, str):
+            origin = self.INDICES[origin]
+        if isinstance(destination, str):
+            destination = self.INDICES[destination]
+
+        # Check legality of move
+        # Check for occupant of destination square
+
+        # Update mover bitboard
+        updated_bitboard = (self.bitboards[piece] & ~(1 << origin)) | (1 << destination)
+
+        # Update previous occupant bitboard
+
+        # Return updated bitboards
+        self.bitboards[piece] = updated_bitboard
+
+
+    def get_occupied_squares(self):
+        bitboard = 0
+        for v in self.bitboards.values():
+            bitboard |= v
+        
+        return bitboard
+
+
+    def get_empty_squares(self):
+        return ~self.get_occupied_squares()
+
+
     def print_board(self, board=None):
         """Prints the current game state."""
 
@@ -71,12 +104,3 @@ class Bitboard:
             print()
         print('  a b c d e f g h \n')
 
-
-if __name__ == '__main__':
-    board = Bitboard()
-    board.print_board()
-    print(Bitboard.COORDINATES[0])
-    notAFile = 0xfefefefefefefefe
-    notHFile = 0x7f7f7f7f7f7f7f7f;
-    board.print_board(notAFile)
-    board.print_board(notHFile)
