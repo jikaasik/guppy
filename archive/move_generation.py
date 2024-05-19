@@ -31,3 +31,22 @@ queen
 #             moves = []
 #             for r in range(1, row+1)
 #             # maybe the minimum of row and column should determine range?
+def get_pawn_moves(self, bitboard, white_turn):
+    moves = []
+    if white_turn:
+        for square in range(64):
+            if (bitboard >> square) & 1:
+                if 8 <= square <= 15:
+                    moves.append((square, square + 8))
+                    moves.append((square, square + 16))
+                else:
+                    moves.append((square, square + 8))
+    else:
+        for square in range(64):
+            if (bitboard >> square) & 1:
+                if 48 <= square <= 55:
+                    moves.append((square, square - 8))
+                    moves.append((square, square - 16))
+                else:
+                    moves.append((square, square - 8))
+    return moves

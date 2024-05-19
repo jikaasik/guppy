@@ -1,3 +1,4 @@
+from board import get_coordinate_dictionary
 class MoveGenerator:
 
     NOT_A_FILE = 0xFEFEFEFEFEFEFEFE
@@ -13,41 +14,64 @@ class MoveGenerator:
     # NOT_8_RANK = 0x00FFFFFFFFFFFFFF
     # NOT_78_RANK = 0x0000FFFFFFFFFFFF
 
+    _, COORDINATES = get_coordinate_dictionary()
+
     def __init__(self):
         pass
+
+    def get_lsf_bit_index(self, bitboard):
+        """Gets index of least significant first bit."""
+        if bitboard:
+            return self.get_bitcount((bitboard & -bitboard) - 1)
+        else:
+            return -1
     
+    @staticmethod
+    def get_bitcount(bitboard):
+        """Identifies the index of the first bit it encounters."""
+    
+        count = 0
+        while bitboard:
+            count += 1
+            bitboard &= bitboard - 1
+        
+        return count
+            
     def get_moves(self):
-        print("yipee")
+        pass
 
     def get_pawn_moves(self, bitboard, white_turn):
+
+        # Set up bitboard copy for get_lsf_bit_index() method
+        tmp_board = bitboard
         moves = []
-        if white_turn:
-            for square in range(64):
-                if (bitboard >> square) & 1:
-                    if 8 <= square <= 15:
-                        moves.append((square, square + 8))
-                        moves.append((square, square + 16))
-                    else:
-                        moves.append((square, square + 8))
-        else:
-            for square in range(64):
-                if (bitboard >> square) & 1:
-                    if 48 <= square <= 55:
-                        moves.append((square, square - 8))
-                        moves.append((square, square - 16))
-                    else:
-                        moves.append((square, square - 8))
+
+        # Loop through bitboard, get index for each pawn, and append possible moves to list
+        while tmp_board:
+            origin = self.get_lsf_bit_index(tmp_board)
+            if white_turn:
+                if not occupied_squares[origin + 8]:
+                    moves.append((origin, origin + 8))
+
+                    # Allow for double move if pawn still on starting square
+                    if 8 <= origin <= 15 and not occupied_squares[origin + 16]:
+                        moves.append((origin, origin + 16))
+
+            else:
+                moves.append((origin, origin - 8))
+                
+                # Allow for double move if pawn still on starting square
+                if 48 <= origin <= 55:
+                    moves.append((origin, origin - 16))
+
+            # Remove index from tmp board
+            tmp_board = (tmp_board & ~(1 << origin))
+       
         return moves
 
 
-
-    # def get_knight_moves(self, bitboard, color):
-    #     moves = []
-    #     for square in range(64):
-    #         if (bitboard >> square) & 1:
-    #             moves.append((square, (square))
-
-    #     return moves
+    def get_knight_moves(self, bitboard, color):
+        pass
 
 
     def get_rook_moves(self, bitboard, color):
