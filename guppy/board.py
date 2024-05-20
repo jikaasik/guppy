@@ -63,16 +63,30 @@ class Bitboard:
             destination = self.INDICES[destination]
 
         # Check legality of move
-        # Check for occupant of destination square
+        ### if not done via move generator, call specific method in move generator to validate?
 
         # Update mover bitboard
         updated_bitboard = (self.bitboards[piece] & ~(1 << origin)) | (1 << destination)
 
-        # Update previous occupant bitboard
+        # Remove previous occupant from board, if captured
+        current_occupant = self.identify_occupant(destination)
+        if current_occupant:
+            self.bitboards[current_occupant] = self.bitboards[current_occupant] & ~(1 << destination)
+            print(f"{piece}x{self.COORDINATES[destination]}")
+        else:
+            print(f"{piece}{destination}")
 
         # Return updated bitboards
         self.bitboards[piece] = updated_bitboard
 
+    def identify_occupant(self, index):
+        """Identifies and returns the current occupant of a given bitboard index (if any)."""
+
+        piece = None
+        for k, v in self.bitboards.items():
+            if (self.bitboards[k] >> index) & 1:
+                piece = k
+        return piece
 
     def print_board(self, board=None):
         """Prints the current game state."""
@@ -81,11 +95,8 @@ class Bitboard:
             print(r + 1, end=' ')
             for f in range(8):
                 square = 8 * r + f
-                piece = None
                 if not board:
-                    for k, v in self.bitboards.items():
-                        if (self.bitboards[k] >> square) & 1:
-                            piece = k
+                    piece = self.identify_occupant(square)
                     print(ICONS[piece] if piece else '.', end=' ')
                 else:
                     print(1 if (board >> square) & 1 else '.', end=' ')

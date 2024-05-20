@@ -39,11 +39,11 @@ white_turn = True
 for i in range(26):
     valid_moves = moves.get_moves(board.bitboards, white_turn)
     selected_move = random.choice(valid_moves)
-    print(selected_move)
+    color = "White" if white_turn else "Black"
     piece = "P" if white_turn else "p"
-    print(piece)
     board.make_move(piece, selected_move)
-    print(white_turn)
-    board.print_board()
     white_turn = not white_turn
+
+board.print_board()
+
 

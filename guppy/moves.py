@@ -23,16 +23,31 @@ class MoveGenerator:
     def get_occupied_squares(bitboards):
         """Generates a bitboard of all occupied squares."""
 
+        occupancies = dict()
+
+        # Any pieces
         bitboard = 0
         for v in bitboards.values():
             bitboard |= v
+        occupancies["any"] = bitboard
+
+        # White pieces
+        bitboard = 0
+        for k in ["P", "R", "N", "B", "Q", "K"]:
+            bitboard |= bitboards[k]
+        occupancies["white"] = bitboard
+
+        # Black pieces
+        bitboard = 0
+        for k in ["p", "r", "n", "b", "q", "k"]:
+            bitboard |= bitboards[k]
+        occupancies["black"] = bitboard
+
+        # Empty
+        occupancies["none"] = ~occupancies["any"]
         
-        return bitboard
+        return occupancies
 
-    def get_empty_squares(self):
-        """Generates a bitboard of all unoccupied squares."""
-
-        return ~self.get_occupied_squares()
 
     def get_lsf_bit_index(self, bitboard):
         """Gets index of least significant first bit."""
@@ -56,11 +71,15 @@ class MoveGenerator:
     def get_moves(self, bitboards, white_turn):
         """Generates a list of all legal moves in the current game state."""
 
-        occupied_squares_bitboard = self.get_occupied_squares(bitboards)
-        occupied_squares = []
-        for i in range(64):
-            mask = 1 << i
-            occupied_squares.append(1 if (occupied_squares_bitboard & mask) else 0)
+        occupancies = self.get_occupied_squares(bitboards)
+        occupied_squares = dict()
+        for c in ["white", "black", "any", "none"]:
+            squares = []
+            for i in range(64):
+                mask = 1 << i
+                squares.append(1 if (occupancies[c] & mask) else 0)
+            occupied_squares[c] = squares
+        
         
         valid_moves = []
 
@@ -68,7 +87,6 @@ class MoveGenerator:
         pawn_moves = self.get_pawn_moves(bitboards, white_turn, occupied_squares)
         if pawn_moves:
             valid_moves.extend(pawn_moves)
-        print(valid_moves)
 
         return valid_moves
 
@@ -83,21 +101,40 @@ class MoveGenerator:
         # Loop through bitboard, get index for each pawn, and append possible moves to list
         while tmp_board:
             origin = self.get_lsf_bit_index(tmp_board)
+
             if white_turn:
-                if not occupied_squares[origin + 8]:
+                # Pawn pushes
+                if not occupied_squares["any"][origin + 8]:
                     pawn_moves.append((origin, origin + 8))
 
                     # Allow for double move if pawn still on starting square
-                    if 8 <= origin <= 15 and not occupied_squares[origin + 16]:
+                    if 8 <= origin <= 15 and not occupied_squares["any"][origin + 16]:
                         pawn_moves.append((origin, origin + 16))
+                
+                # Pawn attacks
+                ## If not a file and up_left is occupied by black, add attack
+                if origin % 8 and occupied_squares["black"][origin + 7]:
+                    pawn_moves.append((origin, origin + 7))
+                ## If not h file and up_right is occupied by black, add attack
+                if origin % 8 - 7 and occupied_squares["black"][origin + 9]:
+                    pawn_moves.append((origin, origin + 9))
 
             else:
-                if not occupied_squares[origin - 8]:
+                # Pawn pushes
+                if not occupied_squares["any"][origin - 8]:
                     pawn_moves.append((origin, origin - 8))
                 
                 # Allow for double move if pawn still on starting square
-                    if 48 <= origin <= 55 and not occupied_squares[origin - 18]:
+                    if 48 <= origin <= 55 and not occupied_squares["any"][origin - 18]:
                         pawn_moves.append((origin, origin - 16))
+
+                # Pawn attacks
+                ## If not a file and down_left is occupied by white, add attack
+                if origin % 8 and occupied_squares["white"][origin - 9]:
+                    pawn_moves.append((origin, origin - 9))
+                ## If not h file and down_right is occupied by white, add attack
+                if origin % 8 - 7 and occupied_squares["white"][origin - 7]:
+                    pawn_moves.append((origin, origin - 7))
 
             # Remove index from tmp board
             tmp_board = (tmp_board & ~(1 << origin))
