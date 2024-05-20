@@ -1,9 +1,9 @@
 from board import Bitboard
 from moves import MoveGenerator
+import random
 
 board = Bitboard()
 moves = MoveGenerator()
-board.print_board()
 
 # for m in [["P", ["e2", "e4"]], ["p", ["e7", "e5"]], ["N", ["g1", "f3"]], ["n", ["b8", "c6"]]]:
 #     piece = m[0]
@@ -35,5 +35,15 @@ board.print_board()
         
 #     # board.make_move(piece, knight_moves[0])
 
-#     white_turn = not white_turn
-import pdb; pdb.set_trace()
+white_turn = True
+for i in range(26):
+    valid_moves = moves.get_moves(board.bitboards, white_turn)
+    selected_move = random.choice(valid_moves)
+    print(selected_move)
+    piece = "P" if white_turn else "p"
+    print(piece)
+    board.make_move(piece, selected_move)
+    print(white_turn)
+    board.print_board()
+    white_turn = not white_turn
+

@@ -19,8 +19,24 @@ class MoveGenerator:
     def __init__(self):
         pass
 
+    @staticmethod
+    def get_occupied_squares(bitboards):
+        """Generates a bitboard of all occupied squares."""
+
+        bitboard = 0
+        for v in bitboards.values():
+            bitboard |= v
+        
+        return bitboard
+
+    def get_empty_squares(self):
+        """Generates a bitboard of all unoccupied squares."""
+
+        return ~self.get_occupied_squares()
+
     def get_lsf_bit_index(self, bitboard):
         """Gets index of least significant first bit."""
+
         if bitboard:
             return self.get_bitcount((bitboard & -bitboard) - 1)
         else:
@@ -37,37 +53,56 @@ class MoveGenerator:
         
         return count
             
-    def get_moves(self):
-        pass
+    def get_moves(self, bitboards, white_turn):
+        """Generates a list of all legal moves in the current game state."""
 
-    def get_pawn_moves(self, bitboard, white_turn):
+        occupied_squares_bitboard = self.get_occupied_squares(bitboards)
+        occupied_squares = []
+        for i in range(64):
+            mask = 1 << i
+            occupied_squares.append(1 if (occupied_squares_bitboard & mask) else 0)
+        
+        valid_moves = []
 
+        # Get pawn moves
+        pawn_moves = self.get_pawn_moves(bitboards, white_turn, occupied_squares)
+        if pawn_moves:
+            valid_moves.extend(pawn_moves)
+        print(valid_moves)
+
+        return valid_moves
+
+    def get_pawn_moves(self, bitboards, white_turn, occupied_squares):
+        """Generates a list of legal pawn moves."""
+
+        piece = "P" if white_turn else "p"
         # Set up bitboard copy for get_lsf_bit_index() method
-        tmp_board = bitboard
-        moves = []
+        tmp_board = bitboards[piece]
+        pawn_moves = []
 
         # Loop through bitboard, get index for each pawn, and append possible moves to list
         while tmp_board:
             origin = self.get_lsf_bit_index(tmp_board)
             if white_turn:
                 if not occupied_squares[origin + 8]:
-                    moves.append((origin, origin + 8))
+                    pawn_moves.append((origin, origin + 8))
 
                     # Allow for double move if pawn still on starting square
                     if 8 <= origin <= 15 and not occupied_squares[origin + 16]:
-                        moves.append((origin, origin + 16))
+                        pawn_moves.append((origin, origin + 16))
 
             else:
-                moves.append((origin, origin - 8))
+                if not occupied_squares[origin - 8]:
+                    pawn_moves.append((origin, origin - 8))
                 
                 # Allow for double move if pawn still on starting square
-                if 48 <= origin <= 55:
-                    moves.append((origin, origin - 16))
+                    if 48 <= origin <= 55 and not occupied_squares[origin - 18]:
+                        pawn_moves.append((origin, origin - 16))
 
             # Remove index from tmp board
             tmp_board = (tmp_board & ~(1 << origin))
        
-        return moves
+        return pawn_moves
 
 
     def get_knight_moves(self, bitboard, color):
@@ -95,8 +130,4 @@ class MoveGenerator:
 
     
     def is_in_check(self):
-        pass
-
-
-    def move(self):
         pass

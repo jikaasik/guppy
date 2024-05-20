@@ -74,18 +74,6 @@ class Bitboard:
         self.bitboards[piece] = updated_bitboard
 
 
-    def get_occupied_squares(self):
-        bitboard = 0
-        for v in self.bitboards.values():
-            bitboard |= v
-        
-        return bitboard
-
-
-    def get_empty_squares(self):
-        return ~self.get_occupied_squares()
-
-
     def print_board(self, board=None):
         """Prints the current game state."""
 
