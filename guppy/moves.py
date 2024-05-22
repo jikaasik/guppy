@@ -80,7 +80,7 @@ class MoveGenerator:
                 squares.append(1 if (occupancies[c] & mask) else 0)
             occupied_squares[c] = squares
         
-        
+    
         valid_moves = []
 
         # Get pawn moves
@@ -167,6 +167,7 @@ class MoveGenerator:
 
             for offset in knight_offsets:
                 destination = origin + offset
+
 
 
 
