@@ -14,7 +14,7 @@ class MoveGenerator:
     # NOT_8_RANK = 0x00FFFFFFFFFFFFFF
     # NOT_78_RANK = 0x0000FFFFFFFFFFFF
 
-    _, COORDINATES = get_coordinate_dictionary()
+    COORDINATES, INDICES = get_coordinate_dictionary()
 
     def __init__(self):
         pass
@@ -29,22 +29,22 @@ class MoveGenerator:
         bitboard = 0
         for v in bitboards.values():
             bitboard |= v
-        occupancies["any"] = bitboard
+        occupancies['any'] = bitboard
 
         # White pieces
         bitboard = 0
-        for k in ["P", "R", "N", "B", "Q", "K"]:
+        for k in ['P', 'R', 'N', 'B', 'Q', 'K']:
             bitboard |= bitboards[k]
-        occupancies["white"] = bitboard
+        occupancies['white'] = bitboard
 
         # Black pieces
         bitboard = 0
-        for k in ["p", "r", "n", "b", "q", "k"]:
+        for k in ['p', 'r', 'n', 'b', 'q', 'k']:
             bitboard |= bitboards[k]
         occupancies["black"] = bitboard
 
         # Empty
-        occupancies["none"] = ~occupancies["any"]
+        occupancies['none'] = ~occupancies['any']
         
         return occupancies
 
@@ -59,7 +59,7 @@ class MoveGenerator:
     
     @staticmethod
     def get_bitcount(bitboard):
-        """Identifies the index of the first bit it encounters."""
+        """Identifies the index of the first encountered bit."""
     
         count = 0
         while bitboard:
@@ -68,12 +68,12 @@ class MoveGenerator:
         
         return count
             
-    def get_moves(self, bitboards, white_turn):
+    def get_moves(self, bitboards, game_state):
         """Generates a list of all legal moves in the current game state."""
 
         occupancies = self.get_occupied_squares(bitboards)
         occupied_squares = dict()
-        for c in ["white", "black", "any", "none"]:
+        for c in ['white', 'black', 'any', 'none']:
             squares = []
             for i in range(64):
                 mask = 1 << i
@@ -84,16 +84,23 @@ class MoveGenerator:
         valid_moves = []
 
         # Get pawn moves
-        pawn_moves = self.get_pawn_moves(bitboards, white_turn, occupied_squares)
+        pawn_moves = self.get_pawn_moves(bitboards, game_state, occupied_squares)
         if pawn_moves:
             valid_moves.extend(pawn_moves)
 
         return valid_moves
 
-    def get_pawn_moves(self, bitboards, white_turn, occupied_squares):
+    def get_pawn_moves(self, bitboards, game_state, occupied_squares):
         """Generates a list of legal pawn moves."""
 
-        piece = "P" if white_turn else "p"
+        # Represent en passant squares as occupied by opponent
+        if game_state.get('en_passant', ''):
+            en_passant = self.INDICES[game_state['en_passant']]
+            opponent = 'white' if not game_state['white_turn'] else 'black'
+            occupied_squares[opponent][en_passant] = 1
+
+        white_turn = game_state['white_turn']
+        piece = 'P' if white_turn else 'p'
         # Set up bitboard copy for get_lsf_bit_index() method
         tmp_board = bitboards[piece]
         pawn_moves = []
@@ -104,36 +111,38 @@ class MoveGenerator:
 
             if white_turn:
                 # Pawn pushes
-                if not occupied_squares["any"][origin + 8]:
+                if not occupied_squares['any'][origin + 8]:
                     pawn_moves.append((origin, origin + 8))
 
                     # Allow for double move if pawn still on starting square
-                    if 8 <= origin <= 15 and not occupied_squares["any"][origin + 16]:
+                    if 8 <= origin <= 15 and not occupied_squares['any'][origin + 16]:
                         pawn_moves.append((origin, origin + 16))
                 
                 # Pawn attacks
                 ## If not a file and up_left is occupied by black, add attack
-                if origin % 8 and occupied_squares["black"][origin + 7]:
+                if origin % 8 and occupied_squares['black'][origin + 7]:
                     pawn_moves.append((origin, origin + 7))
+
                 ## If not h file and up_right is occupied by black, add attack
-                if origin % 8 - 7 and occupied_squares["black"][origin + 9]:
+                if origin % 8 - 7 and occupied_squares['black'][origin + 9]:
                     pawn_moves.append((origin, origin + 9))
 
             else:
                 # Pawn pushes
-                if not occupied_squares["any"][origin - 8]:
+                if not occupied_squares['any'][origin - 8]:
                     pawn_moves.append((origin, origin - 8))
                 
                 # Allow for double move if pawn still on starting square
-                    if 48 <= origin <= 55 and not occupied_squares["any"][origin - 18]:
+                    if 48 <= origin <= 55 and not occupied_squares['any'][origin - 18]:
                         pawn_moves.append((origin, origin - 16))
 
                 # Pawn attacks
                 ## If not a file and down_left is occupied by white, add attack
-                if origin % 8 and occupied_squares["white"][origin - 9]:
+                if origin % 8 and occupied_squares['white'][origin - 9]:
                     pawn_moves.append((origin, origin - 9))
+
                 ## If not h file and down_right is occupied by white, add attack
-                if origin % 8 - 7 and occupied_squares["white"][origin - 7]:
+                if origin % 8 - 7 and occupied_squares['white'][origin - 7]:
                     pawn_moves.append((origin, origin - 7))
 
             # Remove index from tmp board
@@ -142,8 +151,24 @@ class MoveGenerator:
         return pawn_moves
 
 
-    def get_knight_moves(self, bitboard, color):
-        pass
+    def get_knight_moves(self, bitboards, game_state, occupied_squares):
+        """Generates a list of legal knight moves."""
+
+        piece = 'N' if game_state['white_turn'] else 'n'
+        opponent = 'white' if not game_state['white_turn'] else 'black'
+        # Set up bitboard copy for get_lsf_bit_index() method
+        tmp_board = bitboards[piece]
+        knight_offsets = [-17, -15, -10, -6, 6, 10, 15, 17]
+        knight_moves = []
+
+        while tmp_board:
+            origin = self.get_lsf_bit_index(tmp_board)
+            tmp_board &= ~(1 << origin)
+
+            for offset in knight_offsets:
+                destination = origin + offset
+
+
 
 
     def get_rook_moves(self, bitboard, color):

@@ -37,7 +37,7 @@ moves = MoveGenerator()
 
 white_turn = True
 for i in range(26):
-    valid_moves = moves.get_moves(board.bitboards, white_turn)
+    valid_moves = moves.get_moves(board.bitboards, board.game_state)
     selected_move = random.choice(valid_moves)
     color = "White" if white_turn else "Black"
     piece = "P" if white_turn else "p"
@@ -45,5 +45,6 @@ for i in range(26):
     white_turn = not white_turn
 
 board.print_board()
+import pdb; pdb.set_trace()
 
 

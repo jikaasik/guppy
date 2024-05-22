@@ -17,22 +17,20 @@ ICONS = {
 def get_coordinate_dictionary():
     """Generates the algebraic notation coordinates for the index of each square."""
 
-    coordinate_dict = {}
     coordinate_list = []
     for i in range(64):
         row = (i + 8) // 8
         column = i % 8
-        columns = "abcdefgh"
-        coordinate_dict[i] = f"{columns[column]}{row}"
+        columns = 'abcdefgh'
         coordinate_list.append(f"{columns[column]}{row}")
-    return coordinate_dict, coordinate_list
+    indices_dict = {coordinate_list[i]: i for i in range(64)}
+    return coordinate_list, indices_dict
 
 
 class Bitboard:
     """A class that holds the current board state as a set of bitboards."""
 
-    COORDINATES, COORDINATE_LIST = get_coordinate_dictionary()
-    INDICES = {v: k for k, v in COORDINATES.items()}
+    COORDINATES, INDICES = get_coordinate_dictionary()
 
     def __init__(self):
         self.bitboards = {
@@ -51,6 +49,13 @@ class Bitboard:
             'r': 0x8100000000000000,
             'q': 0x0800000000000000,
             'k': 0x1000000000000000
+        }
+        self.game_state = {
+            'white_turn': True,
+            'castling_rights': {'K', 'Q', 'k', 'q'},
+            'en_passant': '',
+            'half_moves': 0,
+            'move_count': 0
         }
 
     def make_move(self, piece, move):
@@ -87,6 +92,39 @@ class Bitboard:
             if (self.bitboards[k] >> index) & 1:
                 piece = k
         return piece
+
+    def position_from_fen(self, fen):
+        # Initialize bitboards
+        piece_bitboards = dict()
+        for piece in [n for n in 'PRNBQKprnbqk']: piece_bitboards[piece] = 0
+        
+        # Split FEN
+        fen_parts = fen.split()
+        piece_placement = fen_parts[0]
+        fen_game_state = {
+            'white_turn': True if fen_parts[1] == 'w' else False,
+            'castling_rights': {fen_parts[2]}.difference({'-'}),
+            'en_passant': fen_parts[3] if fen_parts[3] != '-' else '',
+            'half_moves': fen_parts[4],
+            'move_count': fen_parts[5]
+        }
+
+        # Get piece placements
+        rows = piece_placement.split('/')
+        for rank_idx, row in enumerate(rows):
+            file_idx = 0
+            for char in row:
+                if char.isdigit():
+                    file_idx += int(char)
+                else:
+                    square = (7 - rank_idx) * 8 + file_idx
+                    piece_bitboards[char] |= 1 << square
+                    file_idx += 1
+        
+        setattr(self, 'bitboards', piece_bitboards)
+        setattr(self, 'game_state', fen_game_state)
+
+
 
     def print_board(self, board=None):
         """Prints the current game state."""
