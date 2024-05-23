@@ -31,15 +31,16 @@ def test_identify_occupant(board):
         ('8/7k/7P/7K/8/8/8/8 b - - 12 56', False, set(), '', 12, 56)
     ]
 )
-def test_parse_fen(board, 
-                   fen, 
-                   white_turn, 
-                   castling_rights, 
-                   en_passant, 
-                   half_moves, 
+def test_parse_fen(board,
+                   fen,
+                   white_turn,
+                   castling_rights,
+                   en_passant,
+                   half_moves,
                    move_count):
     board.parse_fen(fen)
     game_state = board.game_state
+
     assert game_state['white_turn'] == white_turn
     assert game_state['castling_rights'] == castling_rights
     assert game_state['en_passant'] == en_passant

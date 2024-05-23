@@ -1,3 +1,4 @@
+from attacks import init_pawn_attacks, init_knight_attacks, init_king_attacks
 from board import get_coordinate_dictionary
 
 
@@ -6,15 +7,20 @@ class MoveGenerator:
     NOT_A_FILE = 0xFEFEFEFEFEFEFEFE
     NOT_B_FILE = 0xFDFDFDFDFDFDFDFD
     NOT_AB_FILE = 0xFCFCFCFCFCFCFCFC
-    NOT_G_FILE = 0x7F7F7F7F7F7F7F7F
-    NOT_H_FILE = 0xBFBFBFBFBFBFBFBF
+    NOT_G_FILE = 0xBFBFBFBFBFBFBFBF
+    NOT_H_FILE = 0x7F7F7F7F7F7F7F7F
     NOT_GH_FILE = 0x3F3F3F3F3F3F3F3F
 
     COORDINATES, INDICES = get_coordinate_dictionary()
 
-    #################################################################
-    ####################### UTILITY METHODS #########################
-    #################################################################
+    def __init__(self):
+        self.pawn_attack_mask = init_pawn_attacks()
+        self.knight_attack_mask = init_knight_attacks()
+        self.king_attack_mask = init_king_attacks
+
+        #################################################################
+        ####################### UTILITY METHODS #########################
+        #################################################################
 
     @staticmethod
     def get_occupancy_bitboards(bitboards: dict) -> dict:
@@ -227,3 +233,46 @@ class MoveGenerator:
 
     def is_in_check(self):
         pass
+
+    #################################################################
+    ##################  PRE-GENERATE ATTACK TABLES ##################
+    #################################################################
+
+    def initialize_attack_masks(self):
+        pawn_attacks = {
+            'white': dict(),
+            'black': dict()
+        }
+        knight_attacks = dict()
+        king_attacks = dict()
+
+        for i in range(64):
+            pawn_attacks['white'][i] = self.generate_pawn_attacks(True, i)
+            pawn_attacks['black'][i] = self.generate_pawn_attacks(False, i)
+
+        setattr(self, 'pawn_attack_mask', pawn_attacks)
+
+    def generate_pawn_attacks(self, white_turn, square):
+        attacks = 0
+        bitboard = (1 << square)
+
+        if not white_turn:
+            if ((bitboard >> 7) & self.NOT_A_FILE):
+                attacks |= (bitboard >> 7)
+            if ((bitboard >> 9) & self.NOT_H_FILE):
+                attacks |= (bitboard >> 9)
+        else:
+            if ((bitboard << 7) & self.NOT_H_FILE):
+                attacks |= (bitboard << 7)
+            if ((bitboard << 9) & self.NOT_A_FILE):
+                attacks |= (bitboard << 9)
+
+        return attacks
+
+    def generate_knight_attacks(self):
+        knight_attacks = None
+        setattr(self, 'knight_attack_mask', knight_attacks)
+
+    def generate_king_attacks(self):
+        king_attacks = None
+        setattr(self, 'king_attack_mask', king_attacks)

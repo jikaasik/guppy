@@ -1,3 +1,4 @@
+import pdb
 from board import Bitboard
 from moves import MoveGenerator
 import random
@@ -9,7 +10,6 @@ moves = MoveGenerator()
 #     piece = m[0]
 #     move = m[1]
 #     board.make_move(piece, move)
-
 
 
 # white_turn = True
@@ -32,7 +32,7 @@ moves = MoveGenerator()
 #             print(board.COORDINATES[move[0]], "to", board.COORDINATES[move[1]])
 #         except:
 #             print(move)
-        
+
 #     # board.make_move(piece, knight_moves[0])
 
 white_turn = True
@@ -44,7 +44,8 @@ for i in range(26):
     board.make_move(piece, selected_move)
     white_turn = not white_turn
 
-board.print_board()
-import pdb; pdb.set_trace()
-
-
+for c in ['black', 'white']:
+    for i in [12, 15, 16]:
+        print(f"Pawn attacks for {c} from {moves.COORDINATES[i]}")
+        board.print_board(moves.pawn_attack_mask[c][i])
+pdb.set_trace()

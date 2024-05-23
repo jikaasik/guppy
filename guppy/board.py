@@ -126,14 +126,14 @@ class Bitboard:
         setattr(self, 'bitboards', piece_bitboards)
         setattr(self, 'game_state', fen_game_state)
 
-    def print_board(self, board: int = None):
+    def print_board(self, board: int = -1):
         """Prints the current game state."""
 
         for r in range(7, -1, -1):
             print(r + 1, end=' ')
             for f in range(8):
                 square = 8 * r + f
-                if not board:
+                if board < 0:
                     piece = self.identify_occupant(square)
                     print(ICONS[piece] if piece else '.', end=' ')
                 else:
