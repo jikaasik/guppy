@@ -1,3 +1,4 @@
+<img src="guppy.png" alt="Guppy" width="200"/>
 # guppy
 A first attempt at programming a chess engine
 
