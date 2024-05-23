@@ -83,12 +83,14 @@ class MoveGenerator:
     def get_moves(self, bitboards: dict, game_state: dict) -> list[tuple]:
         """Generates a list of all legal moves in the current game state."""
 
-        occupied_squares = self.get_occupied_squares(bitboards) 
+        occupied_squares = self.get_occupied_squares(bitboards)
         valid_moves = []
 
         # Get pawn moves
-        valid_moves.extend(self.get_pawn_pushes(bitboards, game_state, occupied_squares))
-        valid_moves.extend(self.get_pawn_attacks(bitboards, game_state, occupied_squares))
+        valid_moves.extend(self.get_pawn_pushes(
+            bitboards, game_state, occupied_squares))
+        valid_moves.extend(self.get_pawn_attacks(
+            bitboards, game_state, occupied_squares))
 
         # Get knight moves
 
@@ -102,11 +104,11 @@ class MoveGenerator:
 
         return valid_moves
 
-    def get_pawn_pushes(self, 
-                       bitboards: dict, 
-                       game_state: dict, 
-                       occupied_squares: list[int]
-                       ) -> list[tuple]:
+    def get_pawn_pushes(self,
+                        bitboards: dict,
+                        game_state: dict,
+                        occupied_squares: list[int]
+                        ) -> list[tuple]:
         """Generates a list of legal pawn pushes."""
 
         white_turn = game_state['white_turn']
@@ -116,7 +118,7 @@ class MoveGenerator:
         tmp_board = bitboards[piece]
         pawn_moves = []
 
-        # Loop through bitboard, get index for each pawn, and append possible moves to list
+        # Loop through board & append possible moves for each piece to list
         while tmp_board:
             origin = self.get_lsf_bit_index(tmp_board)
 
@@ -141,9 +143,9 @@ class MoveGenerator:
 
         return pawn_moves
 
-    def get_pawn_attacks(self, 
-                         bitboards: dict, 
-                         game_state: dict, 
+    def get_pawn_attacks(self,
+                         bitboards: dict,
+                         game_state: dict,
                          occupied_squares: list[int]
                          ) -> list[tuple]:
         """Generates a list of legal pawn moves."""
@@ -161,7 +163,7 @@ class MoveGenerator:
         tmp_board = bitboards[piece]
         pawn_moves = []
 
-        # Loop through bitboard, get index for each pawn, and append possible moves to list
+        # Loop through board & append possible moves for each piece to list
         while tmp_board:
             origin = self.get_lsf_bit_index(tmp_board)
 
@@ -188,9 +190,9 @@ class MoveGenerator:
 
         return pawn_moves
 
-    def get_knight_moves(self, 
-                         bitboards: dict, 
-                         game_state: dict, 
+    def get_knight_moves(self,
+                         bitboards: dict,
+                         game_state: dict,
                          occupied_squares: list[int]):
         """Generates a list of legal knight moves."""
 
@@ -222,6 +224,6 @@ class MoveGenerator:
 
     def validate_move_legal(self, move, color):
         pass
-    
+
     def is_in_check(self):
         pass

@@ -16,7 +16,7 @@ ICONS = {
 
 
 def get_coordinate_dictionary() -> tuple[list, dict]:
-    """Generates the algebraic notation coordinates for the index of each square."""
+    """Generates the algebraic notation for the index of each square."""
 
     coordinate_list = []
     for i in range(64):
@@ -69,15 +69,15 @@ class Bitboard:
             destination = self.INDICES[destination]
 
         # Check legality of move
-        # if not done via move generator, call specific method in move generator to validate?
 
         # Update mover bitboard
-        updated_bitboard = (self.bitboards[piece] & ~(1 << origin)) | (1 << destination)
+        updated_bitboard = (self.bitboards[piece] & ~(
+            1 << origin)) | (1 << destination)
 
         # Remove previous occupant from board, if captured
-        current_occupant = self.identify_occupant(destination)
-        if current_occupant:
-            self.bitboards[current_occupant] = self.bitboards[current_occupant] & ~(1 << destination)
+        occupant = self.identify_occupant(destination)
+        if occupant:
+            self.bitboards[occupant] = self.bitboards[occupant] & ~(1 << destination)
             print(f"{piece}x{self.COORDINATES[destination]}")
         else:
             print(f"{piece}{destination}")
@@ -86,7 +86,7 @@ class Bitboard:
         self.bitboards[piece] = updated_bitboard
 
     def identify_occupant(self, index: int) -> str:
-        """Identifies and returns the current occupant of a given bitboard index (if any)."""
+        """Returns the current occupant of a given bitboard index (if any)."""
 
         piece = None
         for k, v in self.bitboards.items():
