@@ -14,6 +14,7 @@ ICONS = {
     '.': '.'
 }
 
+
 def get_coordinate_dictionary() -> tuple[list, dict]:
     """Generates the algebraic notation coordinates for the index of each square."""
 
@@ -68,7 +69,7 @@ class Bitboard:
             destination = self.INDICES[destination]
 
         # Check legality of move
-        ### if not done via move generator, call specific method in move generator to validate?
+        # if not done via move generator, call specific method in move generator to validate?
 
         # Update mover bitboard
         updated_bitboard = (self.bitboards[piece] & ~(1 << origin)) | (1 << destination)
@@ -96,8 +97,9 @@ class Bitboard:
     def parse_fen(self, fen: str) -> None:
         # Initialize bitboards
         piece_bitboards = dict()
-        for piece in [n for n in 'PRNBQKprnbqk']: piece_bitboards[piece] = 0
-        
+        for piece in [n for n in 'PRNBQKprnbqk']:
+            piece_bitboards[piece] = 0
+
         # Split FEN
         fen_parts = fen.split()
         piece_placement = fen_parts[0]
@@ -120,16 +122,14 @@ class Bitboard:
                     square = (7 - rank_idx) * 8 + file_idx
                     piece_bitboards[char] |= 1 << square
                     file_idx += 1
-        
+
         setattr(self, 'bitboards', piece_bitboards)
         setattr(self, 'game_state', fen_game_state)
-
-
 
     def print_board(self, board: int = None):
         """Prints the current game state."""
 
-        for r in range(7, -1 , -1):
+        for r in range(7, -1, -1):
             print(r + 1, end=' ')
             for f in range(8):
                 square = 8 * r + f
@@ -140,4 +140,3 @@ class Bitboard:
                     print(1 if (board >> square) & 1 else '.', end=' ')
             print()
         print('  a b c d e f g h \n')
-
