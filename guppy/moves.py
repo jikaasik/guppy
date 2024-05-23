@@ -14,7 +14,7 @@ class MoveGenerator:
         pass
 
     @staticmethod
-    def get_occupied_squares(bitboards):
+    def get_occupied_squares(bitboards: dict) -> dict:
         """Generates a bitboard of all occupied squares."""
 
         occupancies = dict()
@@ -43,7 +43,7 @@ class MoveGenerator:
         return occupancies
 
 
-    def get_lsf_bit_index(self, bitboard):
+    def get_lsf_bit_index(self, bitboard: dict) -> int:
         """Gets index of least significant first bit."""
 
         if bitboard:
@@ -52,7 +52,7 @@ class MoveGenerator:
             return -1
     
     @staticmethod
-    def get_bitcount(bitboard):
+    def get_bitcount(bitboard: dict) -> int:
         """Identifies the index of the first encountered bit."""
     
         count = 0
@@ -62,7 +62,7 @@ class MoveGenerator:
         
         return count
             
-    def get_moves(self, bitboards, game_state):
+    def get_moves(self, bitboards: dict, game_state: dict) -> list[tuple]:
         """Generates a list of all legal moves in the current game state."""
 
         occupancies = self.get_occupied_squares(bitboards)
@@ -84,7 +84,11 @@ class MoveGenerator:
 
         return valid_moves
 
-    def get_pawn_moves(self, bitboards, game_state, occupied_squares):
+    def get_pawn_moves(self, 
+                       bitboards: dict, 
+                       game_state: dict, 
+                       occupied_squares: list[int]
+                       ) -> list[tuple]:
         """Generates a list of legal pawn moves."""
 
         # Represent en passant squares as occupied by opponent
@@ -145,7 +149,10 @@ class MoveGenerator:
         return pawn_moves
 
 
-    def get_knight_moves(self, bitboards, game_state, occupied_squares):
+    def get_knight_moves(self, 
+                         bitboards: dict, 
+                         game_state: dict, 
+                         occupied_squares: list[int]):
         """Generates a list of legal knight moves."""
 
         piece = 'N' if game_state['white_turn'] else 'n'
@@ -166,25 +173,25 @@ class MoveGenerator:
 
 
 
-    def get_rook_moves(self, bitboard, color):
-        pass
+    # def get_rook_moves(self, bitboard, color):
+    #     pass
 
 
-    def get_bishop_moves(self, bitboard, color):
-        pass
+    # def get_bishop_moves(self, bitboard, color):
+    #     pass
 
 
-    def get_queen_moves(self, bitboard, color):
-        pass
+    # def get_queen_moves(self, bitboard, color):
+    #     pass
 
 
-    def get_king_moves(self, bitboard, color):
-        pass
+    # def get_king_moves(self, bitboard, color):
+    #     pass
 
 
-    def validate_move_legal(self, move, color):
-        pass
+    # def validate_move_legal(self, move, color):
+    #     pass
 
     
-    def is_in_check(self):
-        pass
+    # def is_in_check(self):
+    #     pass

@@ -14,7 +14,7 @@ ICONS = {
     '.': '.'
 }
 
-def get_coordinate_dictionary():
+def get_coordinate_dictionary() -> tuple[list, dict]:
     """Generates the algebraic notation coordinates for the index of each square."""
 
     coordinate_list = []
@@ -58,7 +58,7 @@ class Bitboard:
             'move_count': 0
         }
 
-    def make_move(self, piece, move):
+    def make_move(self, piece: str, move: tuple[int, int]) -> None:
 
         origin, destination = move
 
@@ -81,10 +81,10 @@ class Bitboard:
         else:
             print(f"{piece}{destination}")
 
-        # Return updated bitboards
+        # Update bitboards
         self.bitboards[piece] = updated_bitboard
 
-    def identify_occupant(self, index):
+    def identify_occupant(self, index: int) -> str:
         """Identifies and returns the current occupant of a given bitboard index (if any)."""
 
         piece = None
@@ -93,7 +93,7 @@ class Bitboard:
                 piece = k
         return piece
 
-    def parse_fen(self, fen):
+    def parse_fen(self, fen: str) -> None:
         # Initialize bitboards
         piece_bitboards = dict()
         for piece in [n for n in 'PRNBQKprnbqk']: piece_bitboards[piece] = 0
@@ -126,7 +126,7 @@ class Bitboard:
 
 
 
-    def print_board(self, board=None):
+    def print_board(self, board: int = None):
         """Prints the current game state."""
 
         for r in range(7, -1 , -1):
