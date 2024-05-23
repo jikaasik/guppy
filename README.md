@@ -22,10 +22,14 @@ The board and pieces are represented as a set of 12 64-bit integers. While repre
                                      a  b  c  d  e  f  g  h
 ```
 
-For example, for white pawns, the starting position is represented simply by the integer 65280, which, when expressed in its 64-bit binary form (and visualized as an 8 by 8 grid), looks like the table below. So, a single integer represents the positions of all of the white pawns in the game! (Amazingly, the black pawns, represented by the integer `71776119061217280` still only use about half of the memory required by an empty string `""`.):
+For example, for white pawns, the starting position is represented simply by the integer 65280, which, when expressed in its 64-bit binary form (and visualized as an 8 by 8 grid), looks like the table below. So, a single integer represents the positions of all of the white pawns in the game! Amazingly, the black pawns, represented by the integer `71776119061217280` still only use about half of the memory required by an empty string `""`. I have visualized the binary versions of the integers representing the white and black pawns below.
 
 ```
+White pawns = 65280             = `0000000000000000000000000000000000000000000000001111111100000000`
+Black pawns = 71776119061217280 = `0000000011111111000000000000000000000000000000000000000000000000`
+
 White pawns: 65280                                                      Black pawns: 71776119061217280
+
 0 0 0 0 0 0 0 0                                                         0 0 0 0 0 0 0 0
 0 0 0 0 0 0 0 0                              ♙ ♙ ♙ ♙ ♙ ♙ ♙ ♙   <=   1 1 1 1 1 1 1 1
 0 0 0 0 0 0 0 0                                                         0 0 0 0 0 0 0 0
@@ -34,7 +38,6 @@ White pawns: 65280                                                      Black pa
 0 0 0 0 0 0 0 0                                                         0 0 0 0 0 0 0 0
 1 1 1 1 1 1 1 1   =>  ♟︎ ♟︎ ♟︎ ♟︎ ♟︎ ♟︎ ♟︎ ♟︎                               0 0 0 0 0 0 0 0
 0 0 0 0 0 0 0 0                                                         0 0 0 0 0 0 0 0
-
 ```
 
 #### Move Generation
