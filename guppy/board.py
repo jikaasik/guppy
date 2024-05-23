@@ -93,7 +93,7 @@ class Bitboard:
                 piece = k
         return piece
 
-    def position_from_fen(self, fen):
+    def parse_fen(self, fen):
         # Initialize bitboards
         piece_bitboards = dict()
         for piece in [n for n in 'PRNBQKprnbqk']: piece_bitboards[piece] = 0
@@ -105,8 +105,8 @@ class Bitboard:
             'white_turn': True if fen_parts[1] == 'w' else False,
             'castling_rights': {fen_parts[2]}.difference({'-'}),
             'en_passant': fen_parts[3] if fen_parts[3] != '-' else '',
-            'half_moves': fen_parts[4],
-            'move_count': fen_parts[5]
+            'half_moves': int(fen_parts[4]),
+            'move_count': int(fen_parts[5])
         }
 
         # Get piece placements
