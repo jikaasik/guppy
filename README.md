@@ -5,19 +5,4 @@
 # guppy
 A first attempt at programming a chess engine
 
-### Structure
-```bash
-|-- guppy/
-|   |-- board.py
-|   |-- move_generation.py, evaluation.py, search.py, ui.py, utils, book, endgame
-
-
-|-- tests/
-|   |-- test_board.py
-|   |-- test_move_generation.py
-|-- docs/
-|-- lib/?
-|-- Makefile
-|-- README.md
-|-- requirements.txt
-```
+This repo is a __work in progress__. It is primarily a fun side project that I am using to learn about chess programming. In any case, a chess engine written in Python is unlikely to take on Stockfish or Leela anytime soon. We'll leave that to a future iteration in a faster language ("GOppy", perhaps :smirk: )
