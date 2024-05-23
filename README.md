@@ -1,8 +1,9 @@
-# guppy
-A first attempt at programming a chess engine
 <p align="center">
 <img src="guppy.png" alt="Guppy" width="200"/>
 </p>
+
+# guppy
+A first attempt at programming a chess engine
 
 ### Structure
 ```bash
