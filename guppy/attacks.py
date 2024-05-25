@@ -7,7 +7,7 @@ NOT_GH_FILE = 0x3F3F3F3F3F3F3F3F
 
 
 def init_pawn_attacks() -> dict:
-    """Returns a dict of pawn attack masks (1 per index)"""
+    """Returns a dict of pawn attack masks"""
 
     pawn_attacks = {
         'white': dict(),
@@ -36,7 +36,7 @@ def init_pawn_attacks() -> dict:
 
 
 def init_knight_attacks() -> dict:
-    """Returns a dict of knight attack masks (1 per index)"""
+    """Returns a dict of knight attack masks"""
 
     knight_attacks = dict()
     for i in range(64):
@@ -65,7 +65,7 @@ def init_knight_attacks() -> dict:
 
 
 def init_king_attacks() -> dict:
-    """Returns a dict of king attack masks (1 per index)"""
+    """Returns a dict of king attack masks"""
 
     king_attacks = dict()
     for i in range(64):
