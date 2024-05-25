@@ -47,6 +47,6 @@ for i in range(12):
 
 for i in [0, 1, 2, 6, 7, 8, 9, 14, 15, 28, 48, 49, 54, 55, 56, 62, 63]:
     # for i in [28]:
-    print(f"knight attacks for {moves.COORDINATES[i]}")
-    board.print_board(moves.knight_attack_mask[i])
+    print(f"King attacks for {moves.COORDINATES[i]}")
+    board.print_board(moves.king_attack_mask[i])
 pdb.set_trace()

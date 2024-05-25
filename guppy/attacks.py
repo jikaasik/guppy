@@ -8,6 +8,7 @@ NOT_GH_FILE = 0x3F3F3F3F3F3F3F3F
 
 def init_pawn_attacks() -> dict:
     """Returns a dict of pawn attack masks (1 per index)"""
+
     pawn_attacks = {
         'white': dict(),
         'black': dict()
@@ -36,6 +37,7 @@ def init_pawn_attacks() -> dict:
 
 def init_knight_attacks() -> dict:
     """Returns a dict of knight attack masks (1 per index)"""
+
     knight_attacks = dict()
     for i in range(64):
         attacks = 0
@@ -64,4 +66,28 @@ def init_knight_attacks() -> dict:
 
 def init_king_attacks() -> dict:
     """Returns a dict of king attack masks (1 per index)"""
-    king_attacks = None
+
+    king_attacks = dict()
+    for i in range(64):
+        attacks = 0
+        bitboard = (1 << i)
+
+        if (bitboard >> 8):
+            attacks |= (bitboard >> 8)
+        if (bitboard << 8):
+            attacks |= (bitboard << 8)
+        if ((bitboard >> 9) & NOT_H_FILE):
+            attacks |= (bitboard >> 9)
+        if ((bitboard << 9) & NOT_A_FILE):
+            attacks |= (bitboard << 9)
+        if ((bitboard >> 7) & NOT_A_FILE):
+            attacks |= (bitboard >> 7)
+        if ((bitboard << 7) & NOT_H_FILE):
+            attacks |= (bitboard << 7)
+        if ((bitboard >> 1) & NOT_H_FILE):
+            attacks |= (bitboard >> 1)
+        if ((bitboard << 1) & NOT_A_FILE):
+            attacks |= (bitboard << 1)
+        king_attacks[i] = attacks
+
+    return king_attacks

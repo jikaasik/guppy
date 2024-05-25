@@ -16,7 +16,7 @@ class MoveGenerator:
     def __init__(self):
         self.pawn_attack_mask = init_pawn_attacks()
         self.knight_attack_mask = init_knight_attacks()
-        self.king_attack_mask = init_king_attacks
+        self.king_attack_mask = init_king_attacks()
 
         #################################################################
         ####################### UTILITY METHODS #########################
