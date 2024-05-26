@@ -89,24 +89,28 @@ class MoveGenerator:
     def get_moves(self, bitboards: dict, game_state: dict) -> list[tuple]:
         """Generates a list of all legal moves in the current game state."""
 
-        occupied_squares = self.get_occupied_squares(bitboards)
+        # occupied_squares = self.get_occupied_squares(bitboards)
+        occupied_squares = self.get_occupancy_bitboards(bitboards)
         valid_moves = []
 
         # Get pawn moves
-        valid_moves.extend(self.get_pawn_pushes(
-            bitboards, game_state, occupied_squares))
-        valid_moves.extend(self.get_pawn_attacks(
-            bitboards, game_state, occupied_squares))
+        # valid_moves.extend(self.get_pawn_pushes(bitboards, game_state, occupied_squares))
+        valid_moves.extend(self.get_pawn_attacks(bitboards, game_state, occupied_squares))
 
-        # Get knight moves
+        # # Get knight moves
+        # valid_moves.extend(self.get_knight_moves())
 
-        # Get bishop moves
+        # # Get bishop moves
+        # valid_moves.extend(self.get_bishop_moves)
 
-        # Get rook moves
+        # # Get rook moves
+        # valid_moves.extend(self.get_rook_moves())
 
-        # Get queen moves
+        # # Get queen moves
+        # valid_moves.extend(self.get_queen_moves())
 
-        # Get king moves
+        # # Get king moves
+        # valid_moves.extend(self.get_king_moves())
 
         return valid_moves
 
@@ -152,7 +156,7 @@ class MoveGenerator:
     def get_pawn_attacks(self,
                          bitboards: dict,
                          game_state: dict,
-                         occupied_squares: list[int]
+                         occupied_squares: dict
                          ) -> list[tuple]:
         """Generates a list of legal pawn moves."""
 
@@ -174,24 +178,20 @@ class MoveGenerator:
             origin = self.get_lsf_bit_index(tmp_board)
 
             if white_turn:
-                # If not a file and up_left is occupied by black, add attack
-                if origin % 8 and occupied_squares['black'][origin + 7]:
-                    pawn_moves.append((origin, origin + 7))
-
-                # If not h file and up_right is occupied by black, add attack
-                if origin % 8 - 7 and occupied_squares['black'][origin + 9]:
-                    pawn_moves.append((origin, origin + 9))
-
+                attacks = self.pawn_attack_mask['white'][origin] & occupied_squares['black']
             else:
-                # If not a file and down_left is occupied by white, add attack
-                if origin % 8 and occupied_squares['white'][origin - 9]:
-                    pawn_moves.append((origin, origin - 9))
+                attacks = self.pawn_attack_mask['black'][origin] & occupied_squares['white']
 
-                # If not h file and down_right is occupied by white, add attack
-                if origin % 8 - 7 and occupied_squares['white'][origin - 7]:
-                    pawn_moves.append((origin, origin - 7))
+            while attacks:
+                target = self.get_lsf_bit_index(attacks)
 
-            # Remove index from tmp board
+                # ADD ATTACK TO MOVES
+                pawn_moves.append((origin, target))
+
+                # Remove target index from attacks board
+                attacks = (attacks & ~(1 << target))
+
+            # Remove origin index from tmp board
             tmp_board = (tmp_board & ~(1 << origin))
 
         return pawn_moves
@@ -217,16 +217,20 @@ class MoveGenerator:
                 destination = origin + offset
 
     def get_rook_moves(self, bitboard, color):
-        pass
+        rook_moves = []
+        return rook_moves
 
     def get_bishop_moves(self, bitboard, color):
-        pass
+        bishop_moves = []
+        return bishop_moves
 
     def get_queen_moves(self, bitboard, color):
-        pass
+        queen_moves = []
+        return queen_moves
 
     def get_king_moves(self, bitboard, color):
-        pass
+        king_moves = []
+        return king_moves
 
     def validate_move_legal(self, move, color):
         pass
