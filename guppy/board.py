@@ -71,8 +71,7 @@ class Bitboard:
         # Check legality of move
 
         # Update mover bitboard
-        updated_bitboard = (self.bitboards[piece] & ~(
-            1 << origin)) | (1 << destination)
+        updated_bitboard = (self.bitboards[piece] & ~(1 << origin)) | (1 << destination)
 
         # Remove previous occupant from board, if captured
         occupant = self.identify_occupant(destination)
@@ -80,10 +79,11 @@ class Bitboard:
             self.bitboards[occupant] = self.bitboards[occupant] & ~(1 << destination)
             print(f"{piece}x{self.COORDINATES[destination]}")
         else:
-            print(f"{piece}{destination}")
+            print(f"{piece}{self.COORDINATES[destination]}")
 
         # Update bitboards
         self.bitboards[piece] = updated_bitboard
+        self.game_state['white_turn'] = not self.game_state['white_turn']
 
     def identify_occupant(self, index: int) -> str:
         """Returns the current occupant of a given bitboard index (if any)."""

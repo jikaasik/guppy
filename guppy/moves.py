@@ -97,8 +97,8 @@ class MoveGenerator:
         valid_moves.extend(self.get_pawn_pushes(bitboards, game_state, occupied_squares))
         valid_moves.extend(self.get_pawn_attacks(bitboards, game_state, occupied_squares))
 
-        # # Get knight moves
-        # valid_moves.extend(self.get_knight_moves())
+        # Get knight moves
+        valid_moves.extend(self.get_knight_moves(bitboards, game_state, occupied_squares))
 
         # # Get bishop moves
         # valid_moves.extend(self.get_bishop_moves)
@@ -109,8 +109,8 @@ class MoveGenerator:
         # # Get queen moves
         # valid_moves.extend(self.get_queen_moves())
 
-        # # Get king moves
-        # valid_moves.extend(self.get_king_moves())
+        # Get king moves
+        valid_moves.extend(self.get_king_moves(bitboards, game_state, occupied_squares))
 
         return valid_moves
 
@@ -121,12 +121,12 @@ class MoveGenerator:
                         ) -> list[tuple]:
         """Generates a list of legal pawn pushes."""
 
+        pawn_moves = []
         white_turn = game_state['white_turn']
         piece = 'P' if white_turn else 'p'
 
         # Set up bitboard copy for get_lsf_bit_index() method
         tmp_board = bitboards[piece]
-        pawn_moves = []
 
         # Loop through board & append possible moves for each piece to list
         while tmp_board:
@@ -141,15 +141,15 @@ class MoveGenerator:
                         pawn_moves.append((origin, origin + 16))
 
             else:
-                if not occupied_squares['any'] & (1 >> origin - 8):
+                if not occupied_squares['any'] & (1 << origin - 8):
                     pawn_moves.append((origin, origin - 8))
 
                 # Allow for double move if pawn still on starting square
-                    if 48 <= origin <= 55 and not occupied_squares['any'] & (1 >> origin - 18):
+                    if 48 <= origin <= 55 and not occupied_squares['any'] & (1 << origin - 18):
                         pawn_moves.append((origin, origin - 16))
 
             # Remove index from tmp board
-            tmp_board = (tmp_board & ~(1 << origin))
+            tmp_board &= ~(1 << origin)
 
         return pawn_moves
 
@@ -160,18 +160,18 @@ class MoveGenerator:
                          ) -> list[tuple]:
         """Generates a list of legal pawn moves."""
 
-        # Represent en passant squares as occupied by opponent
-        if game_state.get('en_passant', ''):
-            en_passant = self.INDICES[game_state['en_passant']]
-            opponent = 'white' if not game_state['white_turn'] else 'black'
-            occupied_squares[opponent][en_passant] = 1
-
+        pawn_moves = []
         white_turn = game_state['white_turn']
         piece = 'P' if white_turn else 'p'
 
+        # # Represent en passant squares as occupied by opponent
+        # if game_state.get('en_passant', ''):
+        #     en_passant = self.INDICES[game_state['en_passant']]
+        #     opponent = 'white' if not game_state['white_turn'] else 'black'
+        #     occupied_squares[opponent][en_passant] = 1
+
         # Set up bitboard copy for get_lsf_bit_index() method
         tmp_board = bitboards[piece]
-        pawn_moves = []
 
         # Loop through board & append possible moves for each piece to list
         while tmp_board:
@@ -185,36 +185,42 @@ class MoveGenerator:
             while attacks:
                 target = self.get_lsf_bit_index(attacks)
 
-                # ADD ATTACK TO MOVES
+                # Add attack moves
                 pawn_moves.append((origin, target))
 
                 # Remove target index from attacks board
-                attacks = (attacks & ~(1 << target))
+                attacks &= ~(1 << target)
 
             # Remove origin index from tmp board
-            tmp_board = (tmp_board & ~(1 << origin))
+            tmp_board &= ~(1 << origin)
 
         return pawn_moves
 
     def get_knight_moves(self,
                          bitboards: dict,
                          game_state: dict,
-                         occupied_squares: list[int]):
+                         occupied_squares: dict):
         """Generates a list of legal knight moves."""
 
+        knight_moves = []
         piece = 'N' if game_state['white_turn'] else 'n'
-        opponent = 'white' if not game_state['white_turn'] else 'black'
+        color = 'white' if game_state['white_turn'] else 'black'
+
         # Set up bitboard copy for get_lsf_bit_index() method
         tmp_board = bitboards[piece]
-        knight_offsets = [-17, -15, -10, -6, 6, 10, 15, 17]
-        knight_moves = []
 
         while tmp_board:
             origin = self.get_lsf_bit_index(tmp_board)
+            attacks = self.knight_attack_mask[origin] & ~occupied_squares[color]
+
+            while attacks:
+                target = self.get_lsf_bit_index(attacks)
+                knight_moves.append((origin, target))
+                attacks &= ~(1 << target)
+
             tmp_board &= ~(1 << origin)
 
-            for offset in knight_offsets:
-                destination = origin + offset
+        return knight_moves
 
     def get_rook_moves(self, bitboard, color):
         rook_moves = []
@@ -228,8 +234,29 @@ class MoveGenerator:
         queen_moves = []
         return queen_moves
 
-    def get_king_moves(self, bitboard, color):
+    def get_king_moves(self,
+                       bitboard: dict,
+                       game_state: dict,
+                       occupied_squares: dict):
+        """Generates a list of legal king moves."""
+
         king_moves = []
+        piece = 'K' if game_state['white_turn'] else 'k'
+        color = 'white' if game_state['white_turn'] else 'black'
+
+        tmp_board = bitboard[piece]
+
+        while tmp_board:
+            origin = self.get_lsf_bit_index(tmp_board)
+            attacks = self.king_attack_mask[origin] & ~occupied_squares[color]
+
+            while attacks:
+                target = self.get_lsf_bit_index(attacks)
+                king_moves.append((origin, target))
+                attacks &= ~(1 << target)
+
+            tmp_board &= ~(1 << origin)
+
         return king_moves
 
     def validate_move_legal(self, move, color):
