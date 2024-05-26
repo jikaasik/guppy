@@ -93,23 +93,13 @@ class MoveGenerator:
         occupied_squares = self.get_occupancy_bitboards(bitboards)
         valid_moves = []
 
-        # Get pawn moves
+        # Append valid moves for each piece type to valid_moves list
         valid_moves.extend(self.get_pawn_pushes(bitboards, game_state, occupied_squares))
         valid_moves.extend(self.get_pawn_attacks(bitboards, game_state, occupied_squares))
-
-        # Get knight moves
         valid_moves.extend(self.get_knight_moves(bitboards, game_state, occupied_squares))
-
-        # # Get bishop moves
-        # valid_moves.extend(self.get_bishop_moves)
-
-        # # Get rook moves
-        # valid_moves.extend(self.get_rook_moves())
-
-        # # Get queen moves
-        # valid_moves.extend(self.get_queen_moves())
-
-        # Get king moves
+        # valid_moves.extend(self.get_bishop_moves(bitboards, game_state, occupied_squares))
+        # valid_moves.extend(self.get_rook_moves(bitboards, game_state, occupied_squares))
+        # valid_moves.extend(self.get_queen_moves(bitboards, game_state, occupied_squares))
         valid_moves.extend(self.get_king_moves(bitboards, game_state, occupied_squares))
 
         return valid_moves
