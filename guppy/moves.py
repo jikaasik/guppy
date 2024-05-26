@@ -94,7 +94,7 @@ class MoveGenerator:
         valid_moves = []
 
         # Get pawn moves
-        # valid_moves.extend(self.get_pawn_pushes(bitboards, game_state, occupied_squares))
+        valid_moves.extend(self.get_pawn_pushes(bitboards, game_state, occupied_squares))
         valid_moves.extend(self.get_pawn_attacks(bitboards, game_state, occupied_squares))
 
         # # Get knight moves
@@ -133,19 +133,19 @@ class MoveGenerator:
             origin = self.get_lsf_bit_index(tmp_board)
 
             if white_turn:
-                if not occupied_squares['any'][origin + 8]:
+                if not occupied_squares['any'] & (1 << origin + 8):
                     pawn_moves.append((origin, origin + 8))
 
                     # Allow for double move if pawn still on starting square
-                    if 8 <= origin <= 15 and not occupied_squares['any'][origin + 16]:
+                    if 8 <= origin <= 15 and not occupied_squares['any'] & (1 << origin + 16):
                         pawn_moves.append((origin, origin + 16))
 
             else:
-                if not occupied_squares['any'][origin - 8]:
+                if not occupied_squares['any'] & (1 >> origin - 8):
                     pawn_moves.append((origin, origin - 8))
 
                 # Allow for double move if pawn still on starting square
-                    if 48 <= origin <= 55 and not occupied_squares['any'][origin - 18]:
+                    if 48 <= origin <= 55 and not occupied_squares['any'] & (1 >> origin - 18):
                         pawn_moves.append((origin, origin - 16))
 
             # Remove index from tmp board

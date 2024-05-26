@@ -35,18 +35,20 @@ moves = MoveGenerator()
 
 #     # board.make_move(piece, knight_moves[0])
 
-white_turn = True
-for i in range(12):
-    valid_moves = moves.get_moves(board.bitboards, board.game_state)
-    selected_move = random.choice(valid_moves)
-    color = "White" if white_turn else "Black"
-    piece = "P" if white_turn else "p"
-    board.make_move(piece, selected_move)
-    white_turn = not white_turn
+# white_turn = True
+# for i in range(12):
+#     valid_moves = moves.get_moves(board.bitboards, board.game_state)
+#     selected_move = random.choice(valid_moves)
+#     color = "White" if white_turn else "Black"
+#     piece = "P" if white_turn else "p"
+#     board.make_move(piece, selected_move)
+#     white_turn = not white_turn
+# board.print_board()
 
 
-for i in [0, 1, 2, 6, 7, 8, 9, 14, 15, 28, 48, 49, 54, 55, 56, 62, 63]:
-    # for i in [28]:
-    print(f"King attacks for {moves.COORDINATES[i]}")
-    board.print_board(moves.king_attack_mask[i])
+# for i in [0, 1, 2, 6, 7, 8, 9, 14, 15, 28, 48, 49, 54, 55, 56, 62, 63]:
+#     # for i in [28]:
+#     print(f"King attacks for {moves.COORDINATES[i]}")
+#     board.print_board(moves.king_attack_mask[i])
+
 pdb.set_trace()
