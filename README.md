@@ -4,7 +4,7 @@
 
 # guppy
 ### A first attempt at programming a chess engine
-This repo is a __work in progress__. It is primarily a fun side project that I am using to learn about chess programming. There are some well-developed libraries that would simplify this process, by my goal here is to learn, so this project is entirely built with the Python standard library. The only external library actively used is Pytest. In any case, a chess engine written in Python is unlikely to take on Stockfish or Leela anytime soon. We'll leave that to a future iteration in a faster language ("GOppy", perhaps :smirk:).
+This repo is a __work in progress__. It is primarily a fun side project that I am using to learn about chess programming. There are some well-developed libraries that would simplify this process, but my goal here is to learn, so this project is entirely built with the Python standard library. The only external library actively used is Pytest. In any case, a chess engine written in Python is unlikely to take on Stockfish or Leela anytime soon. We'll leave that to a future iteration in a faster language ("GOppy", perhaps :smirk:).
 
 #### Board Representation
 The board and pieces are represented as a set of 12 64-bit unsigned integers. While representing the board as a two-dimensional array is intuitive and works perfectly well for programming a regular chess game, an engine's search process is computationally too intensive for that. Luckily, the binary representation of a 64-bit unsigned integer maps conveniently to the 64 squares on a chess board, as shown below:
