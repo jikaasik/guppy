@@ -35,24 +35,30 @@ moves = MoveGenerator()
 
 #     # board.make_move(piece, knight_moves[0])
 
-for i in range(12):
-    white_turn = board.game_state['white_turn']
-    color = "White" if white_turn else "Black"
-    print(color)
-    valid_moves = moves.get_moves(board.bitboards, board.game_state)
-    capture_moves = [n for n in valid_moves if board.identify_occupant(n[1])]
+# for i in range(12):
+#     white_turn = board.game_state['white_turn']
+#     color = "White" if white_turn else "Black"
+#     print(color)
+#     valid_moves = moves.get_moves(board.bitboards, board.game_state)
+#     capture_moves = [n for n in valid_moves if board.identify_occupant(n[1])]
 
-    if capture_moves:
-        selected_move = random.choice(capture_moves)
-    else:
-        selected_move = random.choice(valid_moves)
+#     if capture_moves:
+#         selected_move = random.choice(capture_moves)
+#     else:
+#         selected_move = random.choice(valid_moves)
 
-    piece = board.identify_occupant(selected_move[0])
-    board.make_move(piece, selected_move)
-    board.print_board()
+#     piece = board.identify_occupant(selected_move[0])
+#     board.make_move(piece, selected_move)
+#     board.print_board()
 
 
 # for i in [0, 1, 2, 6, 7, 8, 9, 14, 15, 28, 48, 49, 54, 55, 56, 62, 63]:
 #     # for i in [28]:
 #     print(f"King attacks for {moves.COORDINATES[i]}")
 #     board.print_board(moves.king_attack_mask[i])
+
+from attacks import init_bishop_attacks
+
+square = moves.INDICES['e4']
+test = init_bishop_attacks(square)
+board.print_board(test)

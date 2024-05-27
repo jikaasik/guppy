@@ -6,6 +6,14 @@ NOT_H_FILE = 0x7F7F7F7F7F7F7F7F
 NOT_GH_FILE = 0x3F3F3F3F3F3F3F3F
 
 
+def get_rank_file(square) -> tuple:
+    """Returns the rank and file of a square index."""
+
+    r = int(square / 8)
+    f = int(square % 8)
+    return r, f
+
+
 def init_pawn_attacks() -> dict:
     """Returns a dict of pawn attack masks"""
 
@@ -91,3 +99,35 @@ def init_king_attacks() -> dict:
         king_attacks[i] = attacks
 
     return king_attacks
+
+
+def init_bishop_attacks(square) -> dict:
+    attacks = 0
+    
+    r, f = get_rank_file(square)
+    print(r, f)
+    while r < 6 and f < 6:
+        r += 1
+        f += 1
+        attacks |= (1 << (r * 8 + f))
+    
+    r, f = get_rank_file(square)
+    print(r, f)
+    while r < 6 and f > 1:
+        r += 1
+        f -= 1
+        attacks |= (1 << (r * 8 + f))
+    
+    r, f = get_rank_file(square)
+    while r > 1 and f > 1:
+        r -= 1
+        f -= 1
+        attacks |= (1 << (r * 8 + f))
+    
+    r, f = get_rank_file(square)
+    while r > 1 and f < 6:
+        r -= 1
+        f += 1
+        attacks |= (1 << (r * 8 + f))
+    
+    return attacks
