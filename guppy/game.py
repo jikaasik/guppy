@@ -1,3 +1,4 @@
+from attacks import init_bishop_attacks, init_rook_attacks
 import pdb
 from board import Bitboard
 from moves import MoveGenerator
@@ -57,8 +58,9 @@ moves = MoveGenerator()
 #     print(f"King attacks for {moves.COORDINATES[i]}")
 #     board.print_board(moves.king_attack_mask[i])
 
-from attacks import init_bishop_attacks
 
 square = moves.INDICES['e4']
-test = init_bishop_attacks(square)
-board.print_board(test)
+piece = (1 << moves.INDICES['d5'])
+test_rook = init_rook_attacks(square, piece)
+test_bishop = init_bishop_attacks(square, piece)
+board.print_board(test_rook)

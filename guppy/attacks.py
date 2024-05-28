@@ -101,33 +101,97 @@ def init_king_attacks() -> dict:
     return king_attacks
 
 
-def init_bishop_attacks(square) -> dict:
+def init_bishop_attacks(square, piece=0) -> int:
     attacks = 0
-    
+
     r, f = get_rank_file(square)
-    print(r, f)
     while r < 6 and f < 6:
         r += 1
         f += 1
-        attacks |= (1 << (r * 8 + f))
-    
+        target = (1 << (r * 8 + f))
+        attacks |= target
+        if target & piece:
+            break
+
     r, f = get_rank_file(square)
-    print(r, f)
     while r < 6 and f > 1:
         r += 1
         f -= 1
-        attacks |= (1 << (r * 8 + f))
-    
+        target = (1 << (r * 8 + f))
+        attacks |= target
+        if target & piece:
+            break
+
     r, f = get_rank_file(square)
     while r > 1 and f > 1:
         r -= 1
         f -= 1
-        attacks |= (1 << (r * 8 + f))
-    
+        target = (1 << (r * 8 + f))
+        attacks |= target
+        if target & piece:
+            break
+
     r, f = get_rank_file(square)
     while r > 1 and f < 6:
         r -= 1
         f += 1
-        attacks |= (1 << (r * 8 + f))
-    
+        target = (1 << (r * 8 + f))
+        attacks |= target
+        if target & piece:
+            break
+
     return attacks
+
+
+def init_rook_attacks(square, piece=0) -> int:
+    attacks = 0
+
+    r, f = get_rank_file(square)
+    for i in range(f + 1, 7):
+        target = (1 << (r * 8 + i))
+        attacks |= target
+        if target & piece:
+            break
+
+    for i in range(r + 1, 7):
+        target = (1 << (i * 8 + f))
+        attacks |= target
+        if target & piece:
+            break
+
+    for i in range(f - 1, 0, -1):
+        target = (1 << (r * 8 + i))
+        attacks |= target
+        if target & piece:
+            break
+
+    for i in range(r - 1, 0, -1):
+        target = (1 << (i * 8 + f))
+        attacks |= target
+        if target & piece:
+            break
+
+    return attacks
+
+
+bishop_bit_counts = {
+    6, 5, 5, 5, 5, 5, 5, 6,
+    5, 5, 5, 5, 5, 5, 5, 5,
+    5, 5, 7, 7, 7, 7, 5, 5,
+    5, 5, 7, 9, 9, 7, 5, 5,
+    5, 5, 7, 9, 9, 7, 5, 5,
+    5, 5, 7, 7, 7, 7, 5, 5,
+    5, 5, 5, 5, 5, 5, 5, 5,
+    6, 5, 5, 5, 5, 5, 5, 6
+}
+
+rook_bit_counts = {
+    12, 11, 11, 11, 11, 11, 11, 12,
+    11, 10, 10, 10, 10, 10, 10, 11,
+    11, 10, 10, 10, 10, 10, 10, 11,
+    11, 10, 10, 10, 10, 10, 10, 11,
+    11, 10, 10, 10, 10, 10, 10, 11,
+    11, 10, 10, 10, 10, 10, 10, 11,
+    11, 10, 10, 10, 10, 10, 10, 11,
+    12, 11, 11, 11, 11, 11, 11, 12
+}
